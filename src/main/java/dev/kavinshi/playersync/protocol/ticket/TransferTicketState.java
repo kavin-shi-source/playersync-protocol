@@ -20,4 +20,18 @@ public enum TransferTicketState {
     public boolean isTerminal() {
         return this == APPLIED || this == ABORTED || this == FAILED || this == EXPIRED;
     }
+
+    /**
+     * 将数据库列值解析为枚举。
+     *
+     * @param value {@code playersync_transfer_request.state} 列值
+     * @return 对应枚举
+     * @throws IllegalArgumentException 值为 null 或未知状态
+     */
+    public static TransferTicketState fromDbValue(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("transfer_request.state is null");
+        }
+        return TransferTicketState.valueOf(value);
+    }
 }

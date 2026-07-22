@@ -15,6 +15,3 @@ out
 # other
 *.log
 bin/
-
-# tests
-src/test/
