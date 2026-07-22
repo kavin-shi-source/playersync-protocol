@@ -15,8 +15,6 @@ public final class RevisionHashVerifier {
 
     /**
      * 校验 payload 的 SHA-256 是否与期望哈希匹配。
-     *
-     * <p>TODO 批次 B/C：接入 MessageDigest 实现。
      */
     public static boolean verifyHashMatches(byte[] payload, RevisionHash expected) {
         throw new UnsupportedOperationException("not yet implemented");
