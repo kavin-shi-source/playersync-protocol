@@ -3,7 +3,7 @@
 跨端共享的协议词汇库，由 PlayerSync Forge mod 与 PlayerSyncTransfer Velocity 插件共同依赖。
 
 - Group: `dev.kavinshi`
-- Version: `0.1.0`
+- Version: `0.3.1`
 - Java: 17
 - 依赖: 无第三方依赖（仅 JDK）
 

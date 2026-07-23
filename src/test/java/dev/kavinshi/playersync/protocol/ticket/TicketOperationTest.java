@@ -86,9 +86,16 @@ class TicketOperationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TransferTicketState.class, names = {"REQUESTED", "PREPARING", "READY", "CLAIMED"})
-    void requestAbortIsLegalFromAllActiveStates(TransferTicketState state) {
+    @EnumSource(value = TransferTicketState.class, names = {"REQUESTED", "PREPARING", "READY"})
+    void requestAbortIsLegalFromPreClaimStates(TransferTicketState state) {
         assertThat(TicketOperationContract.validate(REQUEST_ABORT, state)).isEqualTo(ALLOWED);
+    }
+
+    @Test
+    void requestAbortIsDeniedFromClaimed() {
+        // CLAIMED 后目标服拥有 apply/失败恢复责任，代理不应把它交给源服 abort poller。
+        assertThat(TicketOperationContract.validate(REQUEST_ABORT, CLAIMED))
+                .isEqualTo(DENIED_REQUEST_STATE_NOT_ALLOWED);
     }
 
     @Test
@@ -159,7 +166,7 @@ class TicketOperationTest {
     void isLegalFromChecksRequestStateOnly() {
         assertThat(SOURCE_BEGIN_PREPARE.isLegalFrom(REQUESTED)).isTrue();
         assertThat(SOURCE_BEGIN_PREPARE.isLegalFrom(PREPARING)).isFalse();
-        assertThat(REQUEST_ABORT.isLegalFrom(CLAIMED)).isTrue();
+        assertThat(REQUEST_ABORT.isLegalFrom(CLAIMED)).isFalse();
         assertThat(REQUEST_ABORT.isLegalFrom(ABORTED)).isFalse();
     }
 

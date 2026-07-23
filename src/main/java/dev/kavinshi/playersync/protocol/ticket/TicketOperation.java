@@ -22,7 +22,7 @@ import java.util.Set;
  *   TARGET_CLAIM            : READY                → CLAIMED            (player TRANSFER_READY → LOADING)
  *   TARGET_APPLY            : CLAIMED              → APPLIED            (player LOADING → ACTIVE)
  *   REQUEST_ABORT           : REQUESTED/PREPARING/ → ABORT_REQUESTED    (仅 request 表，由源服 poller 收敛)
- *                            READY/CLAIMED
+ *                            READY
  *   SOURCE_SETTLE_ABORT     : ABORT_REQUESTED      → ABORTED            (player ACTIVE/TRANSFER_READY → 恢复)
  *   RECOVER_EXPIRED_PREPARE : PREPARING            → FAILED             (player ACTIVE/TRANSFER_READY → 恢复)
  *   RECOVER_EXPIRED_CLAIM   : CLAIMED              → FAILED             (player LOADING → ERROR)
@@ -59,10 +59,14 @@ public enum TicketOperation {
     /**
      * 请求中止：活跃状态 → ABORT_REQUESTED。仅更新 request 行，player_data 不约束
      * （由源服 poller 在 {@link #SOURCE_SETTLE_ABORT} 中恢复）。
+     *
+     * <p>不支持从 CLAIMED 状态中止：CLAIMED 后目标服已拥有 apply/失败恢复责任，
+     * 代理不应把它重新交给源服 abort poller。CLAIMED 的失败由目标服通过
+     * {@link #RECOVER_EXPIRED_CLAIM} 处理。
      */
     REQUEST_ABORT(
             EnumSet.of(TransferTicketState.REQUESTED, TransferTicketState.PREPARING,
-                    TransferTicketState.READY, TransferTicketState.CLAIMED),
+                    TransferTicketState.READY),
             EnumSet.noneOf(PlayerDataState.class),
             TransferTicketState.ABORT_REQUESTED),
 

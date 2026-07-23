@@ -34,7 +34,6 @@ class TransferTicketTransitionTest {
         assertThat(TransferTicketTransition.validate(PREPARING, ABORT_REQUESTED)).isEqualTo(ALLOWED);
         assertThat(TransferTicketTransition.validate(READY, ABORT_REQUESTED)).isEqualTo(ALLOWED);
         assertThat(TransferTicketTransition.validate(READY, ABORTED)).isEqualTo(ALLOWED);
-        assertThat(TransferTicketTransition.validate(CLAIMED, ABORT_REQUESTED)).isEqualTo(ALLOWED);
         assertThat(TransferTicketTransition.validate(ABORT_REQUESTED, ABORTED)).isEqualTo(ALLOWED);
         assertThat(TransferTicketTransition.validate(ABORT_REQUESTED, FAILED)).isEqualTo(ALLOWED);
     }
@@ -53,6 +52,8 @@ class TransferTicketTransitionTest {
         assertThat(TransferTicketTransition.validate(PREPARING, REQUESTED)).isEqualTo(DENIED_INVALID_TRANSITION);
         assertThat(TransferTicketTransition.validate(READY, PREPARING)).isEqualTo(DENIED_INVALID_TRANSITION);
         assertThat(TransferTicketTransition.validate(CLAIMED, READY)).isEqualTo(DENIED_INVALID_TRANSITION);
+        // CLAIMED cannot be aborted — target owns the session after claiming
+        assertThat(TransferTicketTransition.validate(CLAIMED, ABORT_REQUESTED)).isEqualTo(DENIED_INVALID_TRANSITION);
         assertThat(TransferTicketTransition.validate(APPLIED, REQUESTED)).isEqualTo(DENIED_ALREADY_TERMINAL);
         // cannot skip states
         assertThat(TransferTicketTransition.validate(REQUESTED, CLAIMED)).isEqualTo(DENIED_INVALID_TRANSITION);

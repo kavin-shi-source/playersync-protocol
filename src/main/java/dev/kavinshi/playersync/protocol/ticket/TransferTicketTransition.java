@@ -50,10 +50,10 @@ public final class TransferTicketTransition {
                 TransferTicketState.EXPIRED
         ));
 
-        // CLAIMED: target applies, or fails
+        // CLAIMED: target applies, or fails. No abort from CLAIMED —
+        // target owns the session after claiming.
         ALLOWED_TRANSITIONS.put(TransferTicketState.CLAIMED, EnumSet.of(
                 TransferTicketState.APPLIED,
-                TransferTicketState.ABORT_REQUESTED,
                 TransferTicketState.FAILED,
                 TransferTicketState.EXPIRED
         ));
